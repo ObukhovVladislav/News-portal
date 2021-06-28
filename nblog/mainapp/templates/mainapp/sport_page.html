@@ -1,0 +1,52 @@
+{% extends 'sport_base.html' %}
+{% block title %}{{sport.sport_title}}{% endblock %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            {% if sport.was_published_recently %}
+            <p style="color:red;">NEW</p>
+            <h1>{{ sport.sport_title }}</h1>
+            {% endif %}
+            <hr>
+            <p><span class="glyphicon glyphicon-time"></span> Опубликовано {{ sport.sport_pub_date }}</p>
+            <hr>
+            <img class="img-responsive" src="{{ sport.sport_img.url }}">
+            <hr>
+            <p class="lead">{{ sport.sport_text }}</p>
+            <h4>Оставить комментарий:</h4>
+            <div class="well">
+                <form role="form" action="{% url 'mainapp:sport_leave_comment' sport.id %}" method="post">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input type="text" required="" placeholder="Ваше имя" name="name"><br>
+                        <textarea class="form-control" name="text" required="" placeholder="Текст комментария" cols="30"
+                                  rows="10"></textarea><br>
+                        <button type="submit" class="btn btn-primary">Оставить комментарий</button>
+                </form>
+            </div>
+            <hr>
+            {% if latest_sport_comments_list %}
+            {% for l in latest_sport_comments_list %}
+            <hr>
+            <div class="media">
+                <a class="pull-left" href="#">
+                    <img class="media-object" src="{% static 'img/64x64.png' %}" alt="">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading">{{ l.sport_author_name }}
+                        <small>{{ l.sport_created_on }}</small>
+                    </h4>
+                    <p>{{ l.sport_comment_text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            Комментарии не найдены
+            {% endif %}
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock %}

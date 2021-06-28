@@ -1,0 +1,55 @@
+{% extends 'tech_base.html' %}
+{% block content %}
+{% load static %}
+<h1 class="page-header" style="text-align:center">Технология</h1>
+{% if page %}
+{% for e in page %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            {% if request.user.is_authenticated and request.user.is_staff %}
+            <a href="{% url 'mainapp:edit_tech' e.id %}" class="btn btn-info">
+                Редактировать
+            </a>
+            <a href="{% url 'mainapp:delete_tech' e.id %}" class="btn btn-danger">
+                Удалить
+            </a>
+            {% endif %}
+            <h2>
+                <a href="{% url 'mainapp:tech_page' e.id %}">{{ e.tech_title }}</a>
+            </h2>
+            <p>
+                <span class="glyphicon glyphicon-time"></span> Опубликовано {{ e.tech_pub_date }}</p>
+            <hr>
+            <a href="{% url 'mainapp:tech_page' e.id %}">
+                <img class="img-responsive" src="{{ e.tech_img.url }}" alt="">
+            </a>
+            <hr>
+            <p>{{ e.tech_small_text }}</p>
+            <a class="btn btn-primary" href="{% url 'mainapp:tech_page' e.id %}">Читать далее<span
+                    class="glyphicon glyphicon-chevron-right"></span>
+            </a>
+            <hr>
+        </div>
+        {% endfor %}
+        {% if is_pagination %}
+        <nav>
+            <ul class="pagination justify-content-center">
+                {% for n in page.paginator.page_range %}
+                {% if page.number == n %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ n }}">{{ n }}</a>
+                </li>
+                {% elif n > page.number|add:-3 and n < page.number|add:3 %}
+                <li lass="page-link"><a class="page-link" href="?page={{ n }}">{{ n }}</a></li>
+                {% endif %}
+                {% endfor %}
+            </ul>
+        </nav>
+        {% endif %}
+        {% else %}
+        <h1 class="m-3 text-dark text-center">Нету новостей</h1>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

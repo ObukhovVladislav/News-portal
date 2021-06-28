@@ -1,0 +1,52 @@
+{% extends 'tech_base.html' %}
+{% block title %}{{tech.tech_title}}{% endblock %}
+{% block content %}
+{% load static %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            {% if tech.was_published_recently %}
+            <p style="color:red;">NEW</p>
+            <h1>{{ tech.tech_title }}</h1>
+            {% endif %}
+            <hr>
+            <p><span class="glyphicon glyphicon-time"></span> Опубликовано {{ tech.tech_pub_date }}</p>
+            <hr>
+            <img class="img-responsive" src="{{ tech.tech_img.url }}">
+            <hr>
+            <p class="lead">{{ tech.tech_text }}</p>
+            <h4>Оставить комментарий:</h4>
+            <div class="well">
+                <form role="form" action="{% url 'mainapp:tech_leave_comment' tech.id %}" method="post">
+                    <div class="form-group">
+                        {% csrf_token %}
+                        <input type="text" required="" placeholder="Ваше имя" name="name"><br>
+                        <textarea class="form-control" name="text" required="" placeholder="Текст комментария" cols="30"
+                                  rows="10"></textarea><br>
+                        <button type="submit" class="btn btn-primary">Оставить комментарий</button>
+                </form>
+            </div>
+            <hr>
+            {% if latest_tech_comments_list %}
+            {% for h in latest_tech_comments_list %}
+            <hr>
+            <div class="media">
+                <a class="pull-left" href="#">
+                    <img class="media-object" src="{% static 'img/64x64.png' %}" alt="">
+                </a>
+                <div class="media-body">
+                    <h4 class="media-heading">{{ h.tech_author_name }}
+                        <small>{{ h.tech_created_on }}</small>
+                    </h4>
+                    <p>{{ h.tech_comment_text }}</p>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            Комментарии не найдены
+            {% endif %}
+            <hr>
+        </div>
+    </div>
+</div>
+{% endblock %}
